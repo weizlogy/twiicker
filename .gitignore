@@ -1,0 +1,7 @@
+# 依存関係は管理しない
+node_modules/
+# これ要らなくない？？？
+package-lock.json
+
+# サーバーに隠すもの
+.env

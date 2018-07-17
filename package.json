@@ -1,0 +1,36 @@
+{
+  "name": "twiicker",
+  "version": "0.1.1-alpha",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "start": "node ./main",
+    "start:dev": "node-dev --no-notify --trace-warnings ./server-main"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weizlogy/twiicker.git"
+  },
+  "keywords": [
+    "twitter",
+    "twitter-client"
+  ],
+  "author": "weizlogy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/weizlogy/twiicker/issues"
+  },
+  "homepage": "https://github.com/weizlogy/twiicker#readme",
+  "devDependencies": {
+  },
+  "dependencies": {
+    "dotenv": "^5.0.1",
+    "koa": "^2.5.1",
+    "koa-bodyparser": "^4.2.1",
+    "koa-route": "^3.2.0",
+    "koa-static": "^4.0.3",
+    "oauth": "^0.9.15",
+    "socket.io": "^2.1.1",
+    "twitter-text": "^2.0.4"
+  }
+}
