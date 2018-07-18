@@ -4,7 +4,7 @@
   "description": "",
   "private": true,
   "scripts": {
-    "start": "node ./main",
+    "start": "node ./server-main",
     "start:dev": "node-dev --no-notify --trace-warnings ./server-main"
   },
   "repository": {
