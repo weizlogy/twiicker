@@ -128,6 +128,7 @@ io.on('connection', socket => {
 })
 
 // ポート待受開始
-const port = 3000
+// process.env.PORTはheroku対応
+const port = process.env.PORT || 3000
 server.listen(port)
 console.log('twiicker-v%s server is running at %d', process.env.npm_package_version, port)
