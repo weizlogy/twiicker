@@ -10,7 +10,7 @@ module.exports.TwitterAPI = class TwitterAPI {
       process.env.TWITTER_CONSUMER_KEY,
       process.env.TWITTER_CONSUMER_SECRET,
       "1.0A",
-      'http://127.0.0.1:3000/auth/twitter/callback',
+      process.env.TWITTER_CALLBACK_URL,
       "HMAC-SHA1"
     )
     this.API_PREFIX = 'https://api.twitter.com/1.1'
