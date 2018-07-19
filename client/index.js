@@ -1,9 +1,10 @@
-define(['Vue', 'timeline/timelines'], (Vue, timelines) => {
+define(['Vue', 'timeline/timelines'], (Vue, Timelines) => {
   return new Vue({
     el: 'header',
     data: {
       title: 'twiicker',
       version: '',
+      sidemenu: 'メニュー',
       home: 'ホーム',
       notify: '通知',
       dm: 'DM',
@@ -15,14 +16,23 @@ define(['Vue', 'timeline/timelines'], (Vue, timelines) => {
       })
     },
     methods: {
-      gohome: function(event) {
-        timelines.currentView = 'home'
+      toggleMenu (event) {
+        // 美しくない...
+        let target = document.querySelector('.l-user')
+        if (target.style.display == '') {
+          target.style.display = 'unset'
+          return
+        }
+        target.style.display = ''
       },
-      gonotify: function(event) {
-        timelines.currentView = 'notify'
+      gohome (event) {
+        Timelines.currentView = 'home'
       },
-      godm: function(event) {
-        timelines.currentView = 'direct-message'
+      gonotify (event) {
+        Timelines.currentView = 'notify'
+      },
+      godm (event) {
+        Timelines.currentView = 'direct-message'
       },
     }
   })

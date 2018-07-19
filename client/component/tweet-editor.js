@@ -1,7 +1,7 @@
 define(['Vue', 'twttr', 'punycode'], (Vue, twttr) => {
   Vue.component('tweet-editor', {
     props: ['user'],
-    data: function() {
+    data () {
       return {
         content: '',
         reply: {
@@ -10,10 +10,13 @@ define(['Vue', 'twttr', 'punycode'], (Vue, twttr) => {
       }
     },
     methods: {
-      contentChanged: function(event) {
+      contentChanged (event) {
         this.content = event.target.innerText
       },
-      tweet: function(event) {
+      hide () {
+        this.$parent.openEditor(this.user)
+      },
+      tweet (event) {
         if (!twttr.parseTweet(this.content).valid) {
           return
         }
@@ -24,12 +27,13 @@ define(['Vue', 'twttr', 'punycode'], (Vue, twttr) => {
           })
         })
       },
-      update: function() {
+      update () {
         this.reply.text = this.user['reply_content']
+        this.$nextTick(() => document.querySelector('.tweet-editor').focus())
       }
     },
-    computed:{
-      counter: function() {
+    computed: {
+      counter () {
         return twttr.parseTweet(this.content)
       }
     },
@@ -37,10 +41,10 @@ define(['Vue', 'twttr', 'punycode'], (Vue, twttr) => {
       <div style="width: 100%; height: 100%;">
         <div>{{reply.text}}</div>
         <div class="tweet-editor" contenteditable="true"
-          @input="contentChanged"
+          @input="contentChanged" @keyup.esc="hide" 
           :style="{ 'border-color': '#' + user.profile_link_color }"></div>
-        <span class="counter" :class="{ 'is-text-invalid': !counter.valid }" style="position:relative; right: -50 vw; top: -9px;">{{counter.weightedLength}}</span>
-        <span class="action" style="position:relative; right: -50vw;">
+        <span :class="{ 'is-text-invalid': !counter.valid }" style="position:relative; right: -50 vw; top: -9px;">{{counter.weightedLength}}</span>
+        <span class="tweet-editor-container--tweet-action">
           <span @click="tweet">
             <!-- Forward icon by Icons8 -->
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" x="0px" y="0px" viewBox="0 0 512 512" class="icon icons8-Forward" style="width: 30px; height: 30px;" :class="{ 'is-text-invalid': !counter.valid }" ><path d="M256 171V85l171 171-171 171v-86H85V171h171z"></path></svg>

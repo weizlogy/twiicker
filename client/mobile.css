@@ -1,0 +1,34 @@
+/* サイドメニューは隠す＆フローティングメニューっぽくみせる */
+aside {
+  display: none;
+  z-index: 1;
+  background-color: white;
+  border-right: 1px solid;
+  box-shadow: black 1px 0px 5px;
+  padding: 5px;
+  animation-duration: 1s;
+  animation-name: slideLeftToRight;
+  animation-iteration-count: 1;
+}
+/* サイドメニュー部分をタイムラインが奪う */
+section {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  z-index: 0;
+}
+
+.header--side-menu {
+  display: unset;
+}
+
+/* 左から右にスライド表示 */
+@keyframes slideLeftToRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

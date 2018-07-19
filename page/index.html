@@ -6,12 +6,14 @@
     <link rel="icon" type="image/png" href="/twiicker.png">
     <link href="https://fonts.googleapis.com/earlyaccess/notosansjapanese.css" rel="stylesheet" crossorigin/>
     <link rel="stylesheet" type="text/css" href="/index.css">
+    <link rel="stylesheet" type="text/css" href="/mobile.css" media="screen and (max-width:480px)">
   </head>
   <body>
     <header class="l-header" v-cloak>
       <div class="header--app-info">
-        <a :href="'https://github.com/weizlogy/twiicker/tag/v' + version">{{title}}-v{{version}}</a>
+        <a target="_blank" :href="'https://github.com/weizlogy/twiicker/releases/tag/v' + version">{{title}}-v{{version}}</a>
       </div>
+      <h1 @click="toggleMenu" class="header--side-menu">{{sidemenu}}</h1>
       <h1 @click="gohome">{{home}}</h1>
       <h1 @click="gonotify">{{notify}}</h1>
       <h1 @click="godm">{{dm}}</h1>
