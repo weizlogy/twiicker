@@ -6,9 +6,9 @@ const twAPI = new TwitterAPI()
 module.exports.Twitter = class Twitter {
 
   constructor() {
-    // プライベート変数
     this.htmlEncode = 'utf-8'
-    this.tokenSalt = new Buffer(require('os').hostname()).toString('base64')
+    // herokuにデプロイするとなぜかdecryptできなくなるので、もしかしてちょいちょい変わる？
+    this.tokenSalt = process.env.CRYPT_SALT || new Buffer(require('os').hostname()).toString('base64')
     console.log('SALT: ', this.tokenSalt)
 
     // secret復号共通
