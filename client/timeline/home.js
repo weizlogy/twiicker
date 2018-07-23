@@ -13,7 +13,7 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
       MixinListItem
     ],
     template: `
-      <div style="margin-right: 10px;">
+      <div class="timeline--tweet">
         <div class="timeline--retweet" v-if="item.retweeted_status">
           RT：
           <span class="timeline--user-name">{{item.user_RT_twiicker.name}}</span>
@@ -28,7 +28,7 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
         <pre v-html="content" v-once></pre>
 
         <div class="timeline--quote" v-if="item.quoted_status">
-          <hr>
+          <hr class="timeline--inner-tweet-border">
           <div>
             <span class="timeline--user-name">{{item.quoted_status.user.name}}</span>
             <span class="timeline--user-screen_name">@{{item.quoted_status.user.screen_name}}</span>
@@ -47,6 +47,8 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
           <tweet-media v-for="media in item.extended_entities.media" :key="media.media_url_https" :media="media"></tweet-media>
         </div>
 
+        <hr class="timeline--action-border">
+
         <div class="timeline--actions">
           <reply :item="item"></reply>
           <retweet :item="item"></retweet>
@@ -54,9 +56,9 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
           <favorite :item="item"></favorite>
         </div>
 
-        <tweet-footer :item="item"></tweet-footer>
+        <hr class="timeline--footer-border">
 
-        <hr>
+        <tweet-footer :item="item"></tweet-footer>
       </div>
     `
   }

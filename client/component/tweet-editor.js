@@ -13,8 +13,12 @@ define(['Vue', 'twttr', 'punycode'], (Vue, twttr) => {
       contentChanged (event) {
         this.content = event.target.innerText
       },
-      hide () {
+      hide (event) {
         this.$parent.openEditor(this.user)
+      },
+      pasted (event) {
+        event.target.innerText = event.target.innerText + event.clipboardData.getData('text/plain')
+        this.contentChanged(event)
       },
       tweet (event) {
         if (!twttr.parseTweet(this.content).valid) {
@@ -29,7 +33,11 @@ define(['Vue', 'twttr', 'punycode'], (Vue, twttr) => {
       },
       update () {
         this.reply.text = this.user['reply_content']
-        this.$nextTick(() => document.querySelector('.tweet-editor').focus())
+        this.$nextTick(() => document.querySelectorAll('.tweet-editor').forEach(element => {
+          if (element.style.display != 'none') {
+            element.focus()
+          }
+        }))
       }
     },
     computed: {
@@ -38,16 +46,15 @@ define(['Vue', 'twttr', 'punycode'], (Vue, twttr) => {
       }
     },
     template: `
-      <div style="width: 100%; height: 100%;">
+      <div>
         <div>{{reply.text}}</div>
         <div class="tweet-editor" contenteditable="true"
-          @input="contentChanged" @keyup.esc="hide" 
+          @input="contentChanged" @keyup.esc="hide" @paste.prevent="pasted" 
           :style="{ 'border-color': '#' + user.profile_link_color }"></div>
-        <span :class="{ 'is-text-invalid': !counter.valid }" style="position:relative; right: -50 vw; top: -9px;">{{counter.weightedLength}}</span>
+        <span class="tweet-editor-container--tweet-counter" :class="{ 'is-text-invalid': !counter.valid }">{{counter.weightedLength}}</span>
         <span class="tweet-editor-container--tweet-action">
-          <span @click="tweet">
-            <!-- Forward icon by Icons8 -->
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" x="0px" y="0px" viewBox="0 0 512 512" class="icon icons8-Forward" style="width: 30px; height: 30px;" :class="{ 'is-text-invalid': !counter.valid }" ><path d="M256 171V85l171 171-171 171v-86H85V171h171z"></path></svg>
+          <span @click="tweet" :class="{ 'is-action-disabled': !counter.valid }">
+            Send
           </span>
         </span>
       </div>

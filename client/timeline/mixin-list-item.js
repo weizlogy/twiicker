@@ -97,7 +97,9 @@ define(['Vue', 'user/users'], (Vue, Users) => {
         // QT
         if (item.quoted_status) {
           item.quoted_status['full_text_twiicker'] = this.autoLinkText(item.quoted_status)
-          text = text.replace(item.quoted_status_permalink.url, '')
+          if (item.quoted_status_permalink) {
+            text = text.replace(item.quoted_status_permalink.url, '')
+          }
         }
         // ハッシュタグ
         (item.entities.hashtags || []).reverse().forEach(tag => {

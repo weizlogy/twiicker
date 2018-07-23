@@ -1,3 +1,12 @@
+/* フォント調整 */
+body {
+  font-size: 12px;
+  grid-template-rows: 50px 1fr;
+}
+.l-header {
+  font-size: 10px;
+}
+
 /* サイドメニューは隠す＆フローティングメニューっぽくみせる */
 aside {
   display: none;
@@ -19,6 +28,15 @@ section {
 
 .header--side-menu {
   display: unset;
+}
+
+/* ツイート入力欄調整 */
+.tweet-editor-container--tweet-action {
+  right: 2vw;
+  top: -41px;
+}
+.tweet-editor-container--tweet-counter {
+  right: 12vw;
 }
 
 /* 左から右にスライド表示 */

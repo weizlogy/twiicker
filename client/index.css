@@ -59,11 +59,25 @@ pre {
   white-space: pre-line;
 }
 
-/** コンテンツ区切り */
-hr {
-  height: 10px;
-	border: 0;
-	box-shadow: 0 10px 10px -10px gray inset;
+/** 区切り */
+hr.timeline--action-border {
+  border: 0;
+  height: 1px;
+  background-image: -webkit-linear-gradient(left, mediumpurple, gray, rebeccapurple);
+  background-image: -moz-linear-gradient(left, mediumpurple, gray, rebeccapurple);
+  background-image: -ms-linear-gradient(left, mediumpurple, gray, rebeccapurple);
+  background-image: -o-linear-gradient(left, mediumpurple, gray, rebeccapurple);
+}
+hr.timeline--footer-border {
+  border: 0.5px dotted purple;
+}
+hr.timeline--inner-tweet-border {
+  border: 0;
+  height: 1px;
+  background-image: -webkit-linear-gradient(left, white, mediumpurple, white);
+  background-image: -moz-linear-gradient(left, white, mediumpurple, white);
+  background-image: -ms-linear-gradient(left, white, mediumpurple, white);
+  background-image: -o-linear-gradient(left, white, mediumpurple, white);
 }
 
 .header--app-info {
@@ -86,17 +100,16 @@ hr {
   height: 15px;
 }
 
+.timeline--tweet {
+  box-shadow: 0px 1px 10px 1px darkgrey;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 30px;
+  margin-right: 10px;
+}
 .timeline--quote {
   margin: 5px 5px 5px 5px;
   padding: 5px;
-}
-.timeline--quote > hr {
-  border: 0;
-  height: 1px;
-  background-image: -webkit-linear-gradient(left, white, gray, white);
-  background-image: -moz-linear-gradient(left, white, gray, white);
-  background-image: -ms-linear-gradient(left, white, gray, white);
-  background-image: -o-linear-gradient(left, white, gray, white);
 }
 .timeline--user-screen_name {
   color: gray;
@@ -130,7 +143,6 @@ hr {
 
 /** タイムラインアクション */
 .timeline--actions {
-  margin-bottom: 10px;
   color: gray;
 }
 .timeline--actions > span {
@@ -182,17 +194,30 @@ video.is-filtered:hover {
 }
 .tweet-editor-container--tweet-action {
   position: relative;
-  right: -88vw;
+  right: 1vw;
+  display: block;
+  text-align: right;
+  z-index: 999;
+  top: -44px;
+}
+.tweet-editor-container--tweet-counter {
+  position:relative;
+  right: 5vw;
+  top: -24px;
+  z-index: 999;
+  text-align: right;
+  display: block;
+  font-weight: bold;
 }
 .tweet-editor {
   border: 2px solid gray;
   border-radius: 10px;
   padding: 10px;
-  width: 100%;
-  height: 100%;
-  background-color: #FFFFFF;
   z-index: 999;
   position: relative;
+  box-shadow: 0 0 3px 1px;
+  padding-bottom: 20px;
+  background-color: #FFFFFF;
 }
 
 .icon { /* Customizes all icons at once */
@@ -206,10 +231,16 @@ svg.is-text-invalid {
   opacity: 0.5;
   fill: red;
 }
+
+.is-action-disabled {
+  color: lightslategray;
+}
+
 .is-favorited {
   color: red;
   fill: red;
 }
+
 .is-retweeted {
   color: green;
   fill: green;

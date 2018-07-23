@@ -13,7 +13,7 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
       
     },
     template: `
-      <div>
+      <div class="timeline--tweet">
         <div>
           <span class="timeline--user-name">{{item.sender.name}}</span>
           <span class="timeline--user-screen_name">@{{item.sender.screen_name}}</span>
@@ -21,9 +21,9 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
 
         <pre v-html="item.text" v-once></pre>
 
-        <tweet-footer :item="item"></tweet-footer>
+        <hr class="timeline--footer-border">
 
-        <hr>
+        <tweet-footer :item="item"></tweet-footer>
       </div>
     `
   }
