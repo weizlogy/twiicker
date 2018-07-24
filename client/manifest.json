@@ -1,0 +1,21 @@
+{
+  "short_name": "twiicker",
+  "name": "twiicker",
+  "icons": [
+    {
+      "src": "/twiicker.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "/twiicker.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    }
+  ],
+  "background_color": "#604d8d",
+  "theme_color": "#604d8d",
+  "display": "standalone",
+
+  "start_url": "/?utm_source=homescreen"
+}
