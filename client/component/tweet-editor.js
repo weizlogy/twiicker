@@ -17,8 +17,8 @@ define(['Vue', 'twttr', 'punycode'], (Vue, twttr) => {
         this.$parent.openEditor(this.user)
       },
       pasted (event) {
-        event.target.innerText = event.target.innerText + event.clipboardData.getData('text/plain')
-        this.contentChanged(event)
+        document.execCommand('insertHTML', false, event.clipboardData.getData('text/plain'))
+        this.$nextTick(() => { this.contentChanged(event) })
       },
       tweet (event) {
         if (!twttr.parseTweet(this.content).valid) {
@@ -53,7 +53,7 @@ define(['Vue', 'twttr', 'punycode'], (Vue, twttr) => {
           :style="{ 'border-color': '#' + user.profile_link_color }"></div>
         <span class="tweet-editor-container--tweet-counter" :class="{ 'is-text-invalid': !counter.valid }">{{counter.weightedLength}}</span>
         <span class="tweet-editor-container--tweet-action">
-          <span @click="tweet" :class="{ 'is-action-disabled': !counter.valid }">
+          <span @click="tweet" :class="{ 'is-action-disabled': !counter.valid }" style="cursor: pointer;">
             Send
           </span>
         </span>
