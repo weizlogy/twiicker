@@ -121,7 +121,12 @@ io.on('connection', socket => {
   // ツイート
   socket.on('c2s-req-tweet', (token, tid, msg, ack) => {
     tw.Tweet(msg, tid, token,
-      tweet => { ack(tweet, token.uid) },
+      tweet => {
+        // ツイートしたものを即座にタイムライン上に送る
+        socket.emit('c2s-res-timeline', [ tweet ], token.uid)
+        // ツイートの返し
+        ack(tweet, token.uid)
+      },
       error => { socket.emit('s2c-error', error) }
     )
   })
