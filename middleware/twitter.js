@@ -69,8 +69,54 @@ module.exports.Twitter = class Twitter {
     return await twAPI.UnFavorite(tid, token.token, this.decryptToken(token.secret), cb, ecb)
   }
 
-  async Tweet(msg, tid, token, cb, ecb) {
-    return await twAPI.Tweet(msg, tid, token.token, this.decryptToken(token.secret), cb, ecb)
+  // メディアの有無でAPIの呼び出しを制御する
+  // 頑張るミドル
+  async Tweet(msg, tid, media, token, cb, ecb) {
+    // メディアがないとき
+    if (media.size == 0) {
+      return await twAPI.Tweet(msg, tid, '', token.token, this.decryptToken(token.secret), cb, ecb)
+    }
+    // メディアがあるとき
+    // カテゴリー選択（取り敢えず適当に...）
+    let category = 'tweet_image'
+    if (media.type == 'video/mp4') {
+      category = 'tweet_video'
+    } else if (media.type == 'image/gif') {
+      category = 'tweet_gif'
+    }
+    console.log('request media upload size=%d, type=%s.', media.size, media.type)
+    // INIT
+    // media.typeはURLエンコード忘れずに
+    await twAPI.InitUploadImage(encodeURIComponent(media.type), media.size, category, token.token, this.decryptToken(token.secret), async init => {
+      console.log(init)
+      let mediaID = init['media_id_string']
+      console.log('Media appending... ', mediaID)
+      // APPEND
+      // BASE64エンコーデッドをchunkして送っていく
+      let tasks = media.binary.match(/.{1,1024000}/g).map((binary, index) => {
+        return new Promise(resolve => {
+          let media = {
+            'id': mediaID,
+            'media_data': binary,
+            'segment_index': index
+          }
+          // APPENDは成功しても200を返すだけでボディはない
+          twAPI.AppendUploadImage(media, token.token, this.decryptToken(token.secret), append => {
+            console.log('Media append...%s => %d', mediaID, binary.length)
+            resolve(binary.length)
+          }, ecb)
+        })
+      })
+      // FINALIZE
+      await Promise.all(tasks).then(async append => {
+        console.log('Media appended. ', mediaID)
+        await twAPI.FinalizeUploadImage(mediaID, token.token, this.decryptToken(token.secret), async finalize => {
+          console.log('Media finalize.', finalize)
+          // やっとツイートできる...
+          return await twAPI.Tweet(msg, tid, mediaID, token.token, this.decryptToken(token.secret), cb, ecb)
+        }, ecb)
+      })
+    }, ecb)
   }
 
 }

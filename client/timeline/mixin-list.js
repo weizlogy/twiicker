@@ -30,7 +30,7 @@ define(['Vue'], (Vue) => {
           // 重複更新
           let indexOfItem = indexes.indexOf(id)
           if (indexOfItem > -1) {
-            console.log(targetEvent + ' update: ', item)
+            // console.log(targetEvent + ' update: ', item)
             this.items.splice(indexOfItem, 1, item)
             return
           }

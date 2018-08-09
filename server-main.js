@@ -118,9 +118,9 @@ io.on('connection', socket => {
       error => { socket.emit('s2c-error', error) }
     )
   })
-  // ツイート
-  socket.on('c2s-req-tweet', (token, tid, msg, ack) => {
-    tw.Tweet(msg, tid, token,
+  // ツイート（メディア投稿にも対応
+  socket.on('c2s-req-tweet', (token, tid, msg, media, ack) => {
+    tw.Tweet(msg, tid, media, token,
       tweet => {
         // ツイートしたものを即座にタイムライン上に送る
         socket.emit('c2s-res-timeline', [ tweet ], token.uid)

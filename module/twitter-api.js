@@ -14,6 +14,7 @@ module.exports.TwitterAPI = class TwitterAPI {
       "HMAC-SHA1"
     )
     this.API_PREFIX = 'https://api.twitter.com/1.1'
+    this.UPLOAD_API_PREFIX = 'https://upload.twitter.com/1.1'
   }
 
   // １．リクエストトークンの取得
@@ -66,10 +67,14 @@ module.exports.TwitterAPI = class TwitterAPI {
 
   __CommonPostRequest(url, token, secret, body, callback, ecallback) {
     console.log('POST: ', url)
-    console.log('....: ', body)
+    // console.log('....: ', body)
     this.o.post(url, token, secret, body, (error, result) => {
       if (error) {
         ecallback(error)
+        return
+      }
+      if (!result) {
+        callback('')
         return
       }
       callback(JSON.parse(result))
@@ -123,12 +128,33 @@ module.exports.TwitterAPI = class TwitterAPI {
   }
 
   // ツイート
-  async Tweet(msg, tid, token, secret, callback, ecallback) {
+  async Tweet(msg, tid, mediaIDs, token, secret, callback, ecallback) {
     let body = { 'status': msg }
     if (tid) {
       body['in_reply_to_status_id'] = tid
     }
+    if (mediaIDs) {
+      body['media_ids'] = mediaIDs
+    }
     let url = `${this.API_PREFIX}/statuses/update.json`
+    this.__CommonPostRequest(url, token, secret, body, callback, ecallback)
+  }
+
+  // 画像アップロード
+  async InitUploadImage(type, size, category, token, secret, callback, ecallback) {
+    let body = {}
+    let url = `${this.UPLOAD_API_PREFIX}/media/upload.json?command=INIT` + `&total_bytes=${size}` + `&media_type=${type}` + `&media_category=${category}`
+    this.__CommonPostRequest(url, token, secret, body, callback, ecallback)
+  }
+  async AppendUploadImage(media, token, secret, callback, ecallback) {
+    let body = {}
+    let url = `${this.UPLOAD_API_PREFIX}/media/upload.json?command=APPEND` + `&media_id=${media['id']}` + `&segment_index=${media['segment_index']}`
+    body['media_data'] = media['media_data']
+    this.__CommonPostRequest(url, token, secret, body, callback, ecallback)
+  }
+  async FinalizeUploadImage(mediaID, token, secret, callback, ecallback) {
+    let body = {}
+    let url = `${this.UPLOAD_API_PREFIX}/media/upload.json?command=FINALIZE` + `&media_id=${mediaID}`
     this.__CommonPostRequest(url, token, secret, body, callback, ecallback)
   }
 }
