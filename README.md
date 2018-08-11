@@ -1,6 +1,6 @@
 # twiicker
 
-Windows用公式Twitterアプリの代替を目指すべく作られた、~~Electron製~~PWA対応（予定）TwitterWebクライアントです。
+MIX-TL（MultI accounts eXpanded TimeLine）により複垢を一元管理しつつ誤爆の心配がない唯一の軽量twitterクライアント。
 
 ## 由来
 
