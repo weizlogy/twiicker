@@ -102,6 +102,7 @@ define(['Vue', 'twttr', 'punycode'], (Vue, twttr) => {
     },
     template: `
       <div :style="{ 'background-color': '#' + user.profile_link_color }" style="padding: 10px; border-radius: 10px; box-shadow: 0 0 1px 1px;">
+        <div style="margin-bottom: 5px; cursor: pointer;" @click="hide">close</div>
         <div style="margin-bottom: 10px;">{{reply.text}}</div>
         <div class="tweet-editor" contenteditable="true"
           @input="contentChanged" @keyup.esc="hide" @paste.prevent="pasted" 

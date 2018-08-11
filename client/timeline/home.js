@@ -27,6 +27,27 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
 
         <pre v-html="content" v-once></pre>
 
+        <div v-if="item.extended_entities" class="timeline--media">
+          <tweet-media v-for="media in item.extended_entities.media" :key="media.media_url_https" :media="media"></tweet-media>
+        </div>
+
+        <div class="timeline--cards" v-for="card in twitterCards" :key="card.ogUrl">
+          <hr class="timeline--inner-url-border">
+          <div style="display: flex; flex-direction: row; flex: 1">
+            <div class="filtered-media-container" style="max-width: 200px; max-height: 150px;">
+              <a target='_blank' :href="card.ogUrl" style="text-decoration: none;">
+                <img :src="card.ogImage.url"></img>
+              </a>
+            </div>
+            <div style="display: flex; flex-direction: column; margin-left: 10px; flex: 2">
+              <div style="margin-bottom: 5px;">
+                <a target='_blank' :href="card.ogUrl" style="text-decoration: none;">{{card.ogTitle}}</a>
+              </div>
+              <div style="color: lightgray; font-size: 12px; overflow-y: hidden; max-height: 90px;">{{card.ogDescription}}</div>
+            </div>
+          </div>
+        </div>
+
         <div class="timeline--quote" v-if="item.quoted_status">
           <hr class="timeline--inner-tweet-border">
           <div>
@@ -41,10 +62,6 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
           <div v-if="item.quoted_status.extended_entities" class="timeline--media">
             <tweet-media v-for="media in item.quoted_status.extended_entities.media" :key="media.media_url_https" :media="media"></tweet-media>
           </div>
-        </div>
-
-        <div v-if="item.extended_entities" class="timeline--media">
-          <tweet-media v-for="media in item.extended_entities.media" :key="media.media_url_https" :media="media"></tweet-media>
         </div>
 
         <hr class="timeline--action-border">
@@ -69,7 +86,8 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
         items: [],
         socketEvents: {
           UpdateTimeline: 'c2s-res-timeline'
-        }
+        },
+        sendNotify: false
       }
     },
     mixins: [

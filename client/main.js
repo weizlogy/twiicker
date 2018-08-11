@@ -33,7 +33,7 @@ require(['Vue', 'Dexie', 'socket'], (Vue, Dexie, socket) => {
   /** ===
    * エントリーポイント
    */
-  require(['index', 'user/users'], (index, users) => {
+  require(['index', 'user/users', 'push'], (index, users) => {
     console.info('エントリーポイントがロードされた')
     // サーバーに完了通知
     Vue.socket.emit('c2s-ready')

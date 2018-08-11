@@ -81,6 +81,11 @@ define(['Vue', 'user/users'], (Vue, Users) => {
   }
 
   return {
+    data () {
+      return {
+        'twitterCards': []
+      }
+    },
     components: {
       'reply': cReply,
       'retweet': cRT,
@@ -117,7 +122,27 @@ define(['Vue', 'user/users'], (Vue, Users) => {
         });
         // URL
         (item.entities.urls || []).reverse().forEach(url => {
-          text = text.replace(new RegExp(url.url, 'g'), `<a target='_blank' href="${url.expanded_url}">` + url.display_url + "</a>")
+          // リンクはカード化して本文から除去する
+          // text = text.replace(new RegExp(url.url, 'g'), `<a target='_blank' href="${url.expanded_url}">` + url.display_url + "</a>")
+          text = text.replace(new RegExp(url.url, 'g'), '')
+          // ツイッターカード読み込み（ツイートは除く
+          if (!url.expanded_url.startsWith('https://twitter.com/')) {
+            Vue.socket.emit('c2s-load-twitter-card', url.expanded_url, (card) => {
+              console.log(card)
+              // ogUrlがない場合は元のURLを拝借
+              if (!card.ogUrl) {
+                card.ogUrl = url.expanded_url
+              }
+              // なんか配列で来る時があるので先頭要素を強制選択だよ！（げきおこ
+              if (Array.isArray(card.ogImage)) {
+                card.ogImage = card.ogImage[0]
+              }
+              if (!card.ogImage) {
+                card.ogImage = {}
+              }
+              this.twitterCards.push(card)
+            })
+          }
         });
         return text
       },

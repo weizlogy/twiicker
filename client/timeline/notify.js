@@ -47,7 +47,8 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
         items: [],
         socketEvents: {
           UpdateTimeline: 'c2s-res-notify'
-        }
+        },
+        sendNotify: true
       }
     },
     mixins: [
@@ -55,6 +56,14 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
     ],
     components: {
       tweet: cTweet,
+    },
+    methods: {
+      CreateNotifier (item) {
+        return {
+          'title': item.user.name,
+          'body': item['full_text']
+        }
+      }
     },
     template: `
       <div>

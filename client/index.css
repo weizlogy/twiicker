@@ -79,6 +79,37 @@ hr.timeline--inner-tweet-border {
   background-image: -ms-linear-gradient(left, white, mediumpurple, white);
   background-image: -o-linear-gradient(left, white, mediumpurple, white);
 }
+hr.timeline--inner-url-border {
+  border: 0;
+  height: 1px;
+  background-image: -webkit-linear-gradient(left, white, #9966CC, white);
+  background-image: -moz-linear-gradient(left, white, #9966CC, white);
+  background-image: -ms-linear-gradient(left, white, #9966CC, white);
+  background-image: -o-linear-gradient(left, white, #9966CC, white);
+}
+
+/*
+   フィルターを掛けたメディア表示
+   <element .filtered-media-container>
+     <img>
+ */
+.filtered-media-container {
+  border: solid #e6ecf0 1px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.filtered-media-container * img, .filtered-media-container * video {
+ -webkit-filter: blur(32px);
+  filter: blur(32px);
+  -webkit-transition: .1s;
+  transition: .1s;
+}
+.filtered-media-container * img:hover, .filtered-media-container * video:hover {
+  -webkit-filter: blur(0);
+  filter: blur(0);
+  -webkit-transition: 1s;
+  transition: 1s;
+}
 
 .header--app-info {
   position: absolute;
@@ -123,14 +154,6 @@ hr.timeline--inner-tweet-border {
   display: flex;
   margin-bottom: 20px;
 }
-.timeline--media > div {
-  width: 25%;
-  border: solid #e6ecf0 1px;
-  border-radius: 4px;
-  overflow: hidden;
-  max-height: 200px;
-  margin-right: 5px;
-}
 
 .timeline--footer {
   color: gray;
@@ -152,32 +175,6 @@ hr.timeline--inner-tweet-border {
   margin-right: 5px;
   width: 25px;
   height: 25px;
-}
-
-/** メディア系のモザイク表示 */
-img.is-filtered {
-  -webkit-filter: blur(32px);
-  filter: blur(32px);
-  -webkit-transition: .1s;
-  transition: .1s;
-}
-img.is-filtered:hover {
-  -webkit-filter: blur(0);
-  filter: blur(0);
-  -webkit-transition: 1s;
-  transition: 1s;
-}
-video.is-filtered {
-  -webkit-filter: blur(32px);
-  filter: blur(32px);
-  -webkit-transition: .1s;
-  transition: .1s;
-}
-video.is-filtered:hover {
-  -webkit-filter: blur(0);
-  filter: blur(0);
-  -webkit-transition: 1s;
-  transition: 1s;
 }
 
 /** ユーザーアカウント */

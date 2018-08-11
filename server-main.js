@@ -13,6 +13,10 @@ const io = require('socket.io')(server)
 // ユーザー定義
 const Twitter = require('./middleware/twitter').Twitter
 const tw = new Twitter()
+const OpenGraph = require('./middleware/opengraph').OpenGraph
+const og = new OpenGraph()
+const WebPush = require('./middleware/webpush').WebPush
+const push = new WebPush()
 
 // === ルーティング関係ロジック ===
 
@@ -59,10 +63,14 @@ io.on('connection', socket => {
   socket.on('disconnect', () => {
     console.log('socket disconnected !!!')
   })
+
+  // === サーバー関連 ===
   // バージョン問い合わせ
   socket.on('c2s-version', ack => {
     ack(process.env.npm_package_version)
   })
+
+  // === ツイッター関連 ===
   // ユーザー情報を問い合わせ
   socket.on('c2s-req-user', (item, ack) => {
     console.log('user info request.', item)
@@ -129,6 +137,36 @@ io.on('connection', socket => {
       },
       error => { socket.emit('s2c-error', error) }
     )
+  })
+
+  // === 外部リソース関連 ===
+  socket.on('c2s-load-twitter-card', async (url, ack) => {
+    await og.Read(url).then(result => {
+      if (!result.success) {
+        // 画像なし、タイトルはURL、詳細はエラー内容のダミーオブジェクトを返す
+        let error = {
+          'ogImage': {
+            'url': ''
+          },
+          'ogTitle': url,
+          'ogDescription': result.error
+        }
+        ack(error)
+        return
+      }
+      ack(result.data)
+    })
+  })
+
+  // === PUSH関連 ===
+  socket.on('c2s-webpush-publickey', ack => {
+    ack(push.GetPublicKey())
+  })
+  socket.on('c2s-webpush-register-subscription', subscription => {
+    push.SetSubscription(subscription)
+  })
+  socket.on('c2s-webpush-notify', notifier => {
+    push.SendNotify(notifier)
   })
 })
 

@@ -1,7 +1,7 @@
 {
   "name": "twiicker",
-  "version": "0.1.4-alpha",
-  "description": "",
+  "version": "0.2.1-alpha",
+  "description": "MIX-TL（MultI accounts eXpanded TimeLine）により複垢を一元管理しつつ誤爆の心配がない唯一の軽量twitterクライアント",
   "private": true,
   "scripts": {
     "start": "node ./server-main",
@@ -21,8 +21,7 @@
     "url": "https://github.com/weizlogy/twiicker/issues"
   },
   "homepage": "https://github.com/weizlogy/twiicker#readme",
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "dependencies": {
     "dotenv": "^5.0.1",
     "koa": "^2.5.1",
@@ -30,7 +29,9 @@
     "koa-route": "^3.2.0",
     "koa-static": "^4.0.3",
     "oauth": "^0.9.15",
+    "open-graph-scraper": "^3.5.0",
     "socket.io": "^2.1.1",
-    "twitter-text": "^2.0.4"
+    "twitter-text": "^2.0.4",
+    "web-push": "^3.3.2"
   }
 }
