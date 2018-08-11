@@ -98,7 +98,7 @@ module.exports.TwitterAPI = class TwitterAPI {
   }
   // アカウント通知取得
   async GetNotify(uid, token, secret, callback, ecallback) {
-    let url = `${this.API_PREFIX}/statuses/mentions_timeline.json`
+    let url = `${this.API_PREFIX}/statuses/mentions_timeline.json?tweet_mode=extended`
     this.__CommonGetRequest(url, token, secret, callback, ecallback)
   }
   // アカウントダイレクトメッセージ取得
