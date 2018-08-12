@@ -30,6 +30,13 @@ twiicker = twitter + tweak + tweeter(speaker)
 - ツイート投稿/リプライ
 - リツイート
 - いいね
+- タグ検索
+- リプライ検索
+
+### 各種対応
+
+- PWA
+- PUSH通知
 
 #### タイムライン表示機能
 

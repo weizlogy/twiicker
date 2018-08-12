@@ -3,6 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width">
+    <title>twiicker</title>
+    <meta property="og:title" content="twiicker" />
+    <meta property="og:description " content="MIX-TL（MultI accounts eXpanded TimeLine）により複垢を一元管理しつつ誤爆の心配がない唯一の軽量twitterクライアント。" />
+    <meta property="og:url" content="https://app.twiicker.ga/" />
+    <meta property="og:image" content="/twiicker.png" />
     <link rel="icon" type="image/png" href="/twiicker.png">
     <link rel="manifest" href="/manifest.json">
     <link href="https://fonts.googleapis.com/earlyaccess/notosansjapanese.css" rel="stylesheet" crossorigin/>
@@ -43,6 +48,7 @@
       <home v-show="currentView === 'home'"></home>
       <notify v-show="currentView === 'notify'"></notify>
       <direct-message v-show="currentView === 'direct-message'"></direct-message>
+      <search v-show="currentView === 'search'"></search>
     </section>
 
     <script>

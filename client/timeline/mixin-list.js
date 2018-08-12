@@ -43,7 +43,7 @@ define(['Vue'], (Vue) => {
           }
           // 重複してないものはセット
           this.items.push(item)
-          console.log(uid + ' ' + targetEvent + ' new: ', item)
+          // console.log(uid + ' ' + targetEvent + ' new: ', item)
           // PUSH通知
           if (this.sendNotify) {
             // 初回PUSHを抑止する実処理はここで

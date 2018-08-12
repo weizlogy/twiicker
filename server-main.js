@@ -93,6 +93,35 @@ io.on('connection', socket => {
       error => { socket.emit('s2c-error', error) }
     )
   })
+  // リプライ検索を問い合わせ
+  socket.on('c2s-req-search-reply', async (selectid, tid, replytid, screen, token, ack) => {
+    console.log('c2s-req-search-reply: ', selectid, tid, replytid, screen)
+    await tw.SearchReply(tid, replytid, screen, token).then(timelines => {
+      // 画面切り替え
+      ack(timelines)
+      // 描画
+      socket.emit('c2s-res-search', timelines.map(m => {
+        if (m['id_str'] == selectid) {
+          m['selected_twiicker'] = true
+        }
+        return m
+      }), token.uid)
+    }).catch(error => {
+      socket.emit('s2c-error', error)
+    })
+  })
+  // タグ検索を問い合わせ
+  socket.on('c2s-req-search-tag', async (tag, token, ack) => {
+    console.log('c2s-req-search-tag: ', tag)
+    await tw.SearchTag(tag, token).then(timelines => {
+      // 画面切り替え（データは不要）
+      ack()
+      // 描画
+      socket.emit('c2s-res-search', timelines, token.uid)
+    }).catch(error => {
+      socket.emit('s2c-error', error)
+    })
+  })
   // ダイレクトメッセージを問い合わせ
   socket.on('c2s-req-directmessage', (token) => {
     tw.GetDirectMessage(token,
@@ -163,6 +192,7 @@ io.on('connection', socket => {
     ack(push.GetPublicKey())
   })
   socket.on('c2s-webpush-register-subscription', subscription => {
+    console.log('c2s-webpush-register-subscription: ', subscription)
     push.SetSubscription(subscription)
   })
   socket.on('c2s-webpush-notify', notifier => {

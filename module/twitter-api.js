@@ -65,6 +65,19 @@ module.exports.TwitterAPI = class TwitterAPI {
     })
   }
 
+  async __CommonGetRequestPromise(url, token, secret) {
+    console.log(' GET: ', url)
+    return new Promise((resolve, reject) => {
+      this.o.get(url, token, secret, (error, result) => {
+        if (error) {
+          reject(error)
+          return
+        }
+        resolve(JSON.parse(result))
+      })
+    })
+  }
+
   __CommonPostRequest(url, token, secret, body, callback, ecallback) {
     console.log('POST: ', url)
     // console.log('....: ', body)
@@ -156,5 +169,17 @@ module.exports.TwitterAPI = class TwitterAPI {
     let body = {}
     let url = `${this.UPLOAD_API_PREFIX}/media/upload.json?command=FINALIZE` + `&media_id=${mediaID}`
     this.__CommonPostRequest(url, token, secret, body, callback, ecallback)
+  }
+
+  // 検索
+  async Search(params, token, secret) {
+    let url = `${this.API_PREFIX}/search/tweets.json?tweet_mode=extended`
+    if (params.query) {
+      url = url.concat(`&q=${params.query}`)
+    }
+    if (params.since) {
+      url = url.concat(`&since_id=${params.since}`)
+    }
+    return await this.__CommonGetRequestPromise(url, token, secret)
   }
 }

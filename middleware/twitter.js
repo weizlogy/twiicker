@@ -119,4 +119,26 @@ module.exports.Twitter = class Twitter {
     }, ecb)
   }
 
+  async SearchReply(tid, replytid, screen, token) {
+    let params = {
+      'query': encodeURIComponent('@' + screen),
+    }
+    return await twAPI.Search(params, token.token, this.decryptToken(token.secret)).then((results) => {
+      console.log('search_metadata: ', results['search_metadata'])
+      // リプライに絞り込む
+      return results.statuses.filter(
+        timeline => timeline['in_reply_to_status_id_str'] == tid || timeline['id_str'] == replytid)
+    })
+  }
+
+  async SearchTag(tag, token) {
+    let params = {
+      'query': encodeURIComponent('#' + tag),
+    }
+    return await twAPI.Search(params, token.token, this.decryptToken(token.secret)).then((results) => {
+      console.log('search_metadata: ', results['search_metadata'])
+      return results.statuses
+    })
+  }
+
 }

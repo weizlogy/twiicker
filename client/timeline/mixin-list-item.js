@@ -79,6 +79,85 @@ define(['Vue', 'user/users'], (Vue, Users) => {
       </span>
     `
   }
+  // コンポーネント：本文
+  let cContent = {
+    props: {
+      render: {
+        type: Function,
+        required: true
+      },
+      item: {}
+    },
+    data () {
+      return {
+        'contentRenderingTemplate': `<pre @click="detailView">${this.CreateContentTemplate(this.item)}</pre>`,
+      }
+    },
+    render (h) {
+      return this.$props.render(this)
+    },
+    methods: {
+      CreateContentTemplate (item) {
+        let text = item['full_text'] || item['text'] || ''
+        // RT
+        if (item.retweeted_status) {
+          return this.CreateContentTemplate(item.retweeted_status)
+        }
+        // QT
+        if (item.quoted_status) {
+          item.quoted_status['full_text_twiicker'] = this.CreateContentTemplate(item.quoted_status)
+          if (item.quoted_status_permalink) {
+            text = text.replace(item.quoted_status_permalink.url, '')
+          }
+        }
+        // ハッシュタグ
+        (item.entities.hashtags || []).reverse().forEach(tag => {
+          let regex = new RegExp('#' + tag.text, 'y')
+          regex.lastIndex = tag.indices[0]
+          // text = text.replace(regex, '<a href="#">#' + tag.text + ' </a>')
+          text = text.replace(regex, `<span style="border: 1px darkblue solid; border-radius: 6px; padding: 3px; box-shadow: 0 0 1px 0px; background-color: lightblue; opacity: 0.9; display: inline-block; cursor: pointer; margin: 2px 1px 2px 1px;" @click.stop.prevent="searchTag('${tag.text}')">#` + tag.text + ' </span>')
+        });
+        // メンション
+        (item.entities.user_mentions || []).reverse().forEach(mention => {
+          // text = text.replace(new RegExp('@' + mention.screen_name, 'g'), `<span>@<a href="#">${mention.screen_name}</a></span>`)
+          text = text.replace(new RegExp('@' + mention.screen_name, 'g'), `<span style="border: 1px darkgray solid; border-radius: 6px; padding: 3px; box-shadow: 0 0 1px 0px; background-color: lightgray; opacity: 0.9; display: inline-block; cursor: pointer; margin: 2px 1px 2px 1px;">@${mention.screen_name}</span>`)
+        });
+        // メディア
+        ((item.extended_entities || {}).media || []).reverse().forEach(media => {
+          text = text.replace(media.url, '')
+        });
+        // URL
+        (item.entities.urls || []).reverse().forEach(url => {
+          // リンクは本文から除去する（別枠でカード化する）
+          // text = text.replace(new RegExp(url.url, 'g'), `<a target='_blank' href="${url.expanded_url}">` + url.display_url + "</a>")
+          text = text.replace(new RegExp(url.url, 'g'), '')
+        });
+        return text
+      },
+    }
+  }
+  // コンポーネント：ツイッターカード
+  let cCards = {
+    props: ['card'],
+    template: `
+      <div>
+        <hr class="timeline--inner-url-border">
+        <div style="display: flex; flex-direction: row; flex: 1">
+          <div class="filtered-media-container" style="max-width: 200px; max-height: 150px;">
+            <a target='_blank' :href="card.ogUrl" style="text-decoration: none;">
+              <img :src="card.ogImage.url" style="width: 100%;"></img>
+            </a>
+          </div>
+          <div style="display: flex; flex-direction: column; margin-left: 10px; flex: 2">
+            <div style="margin-bottom: 5px;">
+              <a target='_blank' :href="card.ogUrl" style="text-decoration: none;">{{card.ogTitle}}</a>
+            </div>
+            <div style="color: lightgray; font-size: 12px; overflow-y: hidden; max-height: 90px;">{{card.ogDescription}}</div>
+          </div>
+        </div>
+      </div>
+    `
+  }
 
   return {
     data () {
@@ -91,66 +170,73 @@ define(['Vue', 'user/users'], (Vue, Users) => {
       'retweet': cRT,
       'quote': cQT,
       'favorite': cFavorite,
+      'tweet-content': cContent,
+      'twiter-cards': cCards,
     },
     methods: {
-      autoLinkText (item) {
-        let text = item['full_text'] || item['text'] || ''
-        // RT
-        if (item.retweeted_status) {
-          return this.autoLinkText(item.retweeted_status)
-        }
-        // QT
-        if (item.quoted_status) {
-          item.quoted_status['full_text_twiicker'] = this.autoLinkText(item.quoted_status)
-          if (item.quoted_status_permalink) {
-            text = text.replace(item.quoted_status_permalink.url, '')
+      __render ({item, contentRenderingTemplate}) {
+        return this.$createElement({
+          props:['item'],
+          template: contentRenderingTemplate,
+          methods: {
+            detailView () {
+              console.log(this.item)
+              // 再帰検索処理
+              Vue.idb.token.get(this.item['from_user_id'], token => {
+                let selectid = this.item['id_str']
+                let caches = []
+                let callback = (timelines) => {
+                  this.$root.currentView = 'search'
+                  timelines.filter(f => !caches.includes(f['id_str'])).forEach(timeline => {
+                    caches.push(timeline['id_str'])
+                    Vue.socket.emit('c2s-req-search-reply', selectid, timeline['id_str'], timeline['in_reply_to_status_id_str'], timeline['user']['screen_name'], token, callback)
+                  })
+                }
+                Vue.socket.emit('c2s-req-search-reply', selectid, selectid, this.item['in_reply_to_status_id_str'], this.item['user']['screen_name'], token, callback)
+              })
+            },
+            searchTag (tag) {
+              console.log('searchTag: ', tag)
+              Vue.idb.token.get(this.item['from_user_id'], token => {
+                Vue.socket.emit('c2s-req-search-tag', tag, token, () => {
+                  this.$root.currentView = 'search'
+                })
+              })
+            }
           }
-        }
-        // ハッシュタグ
-        (item.entities.hashtags || []).reverse().forEach(tag => {
-          let regex = new RegExp('#' + tag.text, 'y')
-          regex.lastIndex = tag.indices[0]
-          text = text.replace(regex, '<a href="#">#' + tag.text + ' </a>')
-        });
-        // メンション
-        (item.entities.user_mentions || []).reverse().forEach(mention => {
-          text = text.replace(new RegExp('@' + mention.screen_name, 'g'), `@<a href="#">${mention.screen_name}</a>`)
-        });
-        // メディア
-        ((item.extended_entities || {}).media || []).reverse().forEach(media => {
-          text = text.replace(media.url, '')
-        });
-        // URL
-        (item.entities.urls || []).reverse().forEach(url => {
-          // リンクはカード化して本文から除去する
-          // text = text.replace(new RegExp(url.url, 'g'), `<a target='_blank' href="${url.expanded_url}">` + url.display_url + "</a>")
-          text = text.replace(new RegExp(url.url, 'g'), '')
-          // ツイッターカード読み込み（ツイートは除く
-          if (!url.expanded_url.startsWith('https://twitter.com/')) {
-            Vue.socket.emit('c2s-load-twitter-card', url.expanded_url, (card) => {
-              console.log(card)
-              // ogUrlがない場合は元のURLを拝借
-              if (!card.ogUrl) {
-                card.ogUrl = url.expanded_url
-              }
-              // なんか配列で来る時があるので先頭要素を強制選択だよ！（げきおこ
-              if (Array.isArray(card.ogImage)) {
-                card.ogImage = card.ogImage[0]
-              }
-              if (!card.ogImage) {
-                card.ogImage = {}
-              }
-              this.twitterCards.push(card)
-            })
+        }, {
+          props: {
+            item: item
           }
-        });
-        return text
-      },
-    },
-    computed: {
-      content () {
-        return this.autoLinkText(this.item)
+        })
       }
-    }
+    },
+    async created () {
+      let tasks = (this.item.entities.urls || []).map(url => {
+        return new Promise(resolve => {
+          // ツイッターカード読み込み
+          Vue.socket.emit('c2s-load-twitter-card', url.expanded_url, (card) => {
+            console.log('c2s-load-twitter-card', card)
+            // ogUrlがない場合は元のURLを拝借
+            if (!card.ogUrl) {
+              card.ogUrl = url.expanded_url
+            }
+            // なんか配列で来る時があるので先頭要素を強制選択だよ！（げきおこ
+            if (Array.isArray(card.ogImage)) {
+              card.ogImage = card.ogImage[0]
+            }
+            if (!card.ogImage) {
+              card.ogImage = {}
+            }
+            resolve(card)
+          })
+        })
+      })
+      await Promise.all(tasks).then(results => {
+        results.forEach(item => {
+          this.twitterCards.push(item)
+        })
+      })
+    },
   }
 })

@@ -22,21 +22,24 @@ require(['Vue'], (Vue) => {
     console.log('Valid push key: ', publicKey)
     
     navigator.serviceWorker.ready.then(registration => {
-      return registration.pushManager.getSubscription()
-    }).then(subscription => {
-      if (subscription) {
-        console.log('PUSH通知は購読済み', subscription)
-        return subscription
-      }
-      const applicationServerPublicKey = urlB64ToUint8Array(publicKey)
-      register.pushManager.subscribe({ 'userVisibleOnly': true, 'applicationServerKey': applicationServerPublicKey }).then(subscribed => {
-        console.log('PUSH通知が購読された', subscribed)
-        return subscribed
-      }).catch(error => {
-        console.log('ServiceWorker subscribe failed: ', error)
+      registration.pushManager.getSubscription().then(subscription => {
+        if (subscription) {
+          console.log('PUSH通知は購読済み', subscription)
+          return subscription
+        }
+        const applicationServerPublicKey = urlB64ToUint8Array(publicKey)
+        registration.pushManager.subscribe({
+          'userVisibleOnly': true, 'applicationServerKey': applicationServerPublicKey }).then(
+            subscribed => {
+              console.log('PUSH通知が購読された', subscribed)
+              return subscribed
+            }
+          ).catch(error => {
+            console.log('ServiceWorker subscribe failed: ', error)
+          })
+      }).then(subscribed => {
+        Vue.socket.emit('c2s-webpush-register-subscription', subscribed)
       })
-    }).then(subscribed => {
-      Vue.socket.emit('c2s-webpush-register-subscription', subscribed)
     })
   })
 })

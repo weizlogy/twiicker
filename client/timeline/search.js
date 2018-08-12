@@ -1,5 +1,5 @@
 /**
- * 登録済みアカウントのホームタイムライン.
+ * いろいろな検索結果を表示するタイムライン.
  */
 define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-list', 'timeline/mixin-list-item'], (Vue, Media, Footer, MixinList, MixinListItem) => {
   // タイムライン個々のツイート
@@ -13,7 +13,7 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
       MixinListItem
     ],
     template: `
-      <div class="timeline--tweet" ontouchstart>
+      <div class="timeline--tweet" :class="{ 'is-selected-on-search': item.selected_twiicker }" ontouchstart>
         <div class="timeline--retweet" v-if="item.retweeted_status">
           RT：
           <span class="timeline--user-name">{{item.user_RT_twiicker.name}}</span>
@@ -70,9 +70,9 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
       return {
         items: [],
         socketEvents: {
-          UpdateTimeline: 'c2s-res-timeline'
+          UpdateTimeline: 'c2s-res-search'
         },
-        sendNotify: false
+        sendNotify: false,
       }
     },
     mixins: [
@@ -85,6 +85,11 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
       <div>
         <tweet v-for="item in ordered" :key="item.id_str_twiicker" :item="item"></tweet>
       </div>
-    `
+    `,
+    methods: {
+      Clear () {
+        this.items = []
+      }
+    },
   }
 })

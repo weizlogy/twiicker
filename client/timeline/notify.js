@@ -13,17 +13,19 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
       MixinListItem
     ],
     template: `
-      <div class="timeline--tweet">
+      <div class="timeline--tweet" ontouchstart>
         <div>
           <span class="timeline--user-name">{{item.user.name}}</span>
           <span class="timeline--user-screen_name">@{{item.user.screen_name}}</span>
         </div>
 
-        <pre v-html="content" v-once></pre>
+        <tweet-content :item="item" :render="__render" v-once></tweet-content>
 
         <div v-if="item.extended_entities" class="timeline--media">
           <tweet-media v-for="media in item.extended_entities.media" :key="media.media_url_https" :media="media"></tweet-media>
         </div>
+
+        <twiter-cards :card="card" v-for="card in twitterCards" :key="card.ogUrl"></twiter-cards>
 
         <hr class="timeline--action-border">
 

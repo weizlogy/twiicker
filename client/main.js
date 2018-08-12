@@ -3,7 +3,7 @@
  */
 requirejs.config({
   paths: {
-    'Vue': '//unpkg.com/vue@latest/dist/vue',
+    'Vue': '//unpkg.com/vue@latest/dist/vue.min',
     'Dexie': '//unpkg.com/dexie@latest/dist/dexie',
     'io': '//cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.slim',
     'twttr': '//cdn.jsdelivr.net/npm/twitter-text@2.0.4/build/twitter-text.min',
