@@ -1,6 +1,6 @@
 {
   "name": "twiicker",
-  "version": "0.2.2-alpha",
+  "version": "0.2.3-alpha",
   "description": "MIX-TL（MultI accounts eXpanded TimeLine）により複垢を一元管理しつつ誤爆の心配がない唯一の軽量twitterクライアント",
   "private": true,
   "scripts": {

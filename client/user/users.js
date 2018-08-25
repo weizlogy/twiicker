@@ -58,12 +58,14 @@ define(['Vue', 'component/tweet-editor'], Vue => {
         item['editor_open'] = !item['editor_open']
         item['reply_id_str'] = ''
         item['reply_content'] = ''
+        item['reply_to'] = ''
         this.$refs['tweet-editor-' + item['id_str']][0].update()
       },
       openEditorInReply: function(item, tweet) {
         this.openEditor(item)
         item['reply_id_str'] = tweet['id_str']
         item['reply_content'] = tweet['full_text']
+        item['reply_to'] = tweet['user']['screen_name']
         this.$refs['tweet-editor-' + item['id_str']][0].update()
       },
       isEditorOpen: function(item) {

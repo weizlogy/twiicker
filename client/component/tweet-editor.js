@@ -6,7 +6,7 @@ define(['Vue', 'twttr', 'punycode'], (Vue, twttr) => {
         content: '',
         media: [],
         reply: {
-          text: ''
+          text: '',
         },
       }
     },
@@ -83,6 +83,12 @@ define(['Vue', 'twttr', 'punycode'], (Vue, twttr) => {
       },
       update () {
         this.reply.text = this.user['reply_content']
+        let replyTo = this.user['reply_to']
+        if (replyTo) {
+          let target = Array.from(this.$el.children).filter(el => el.className == 'tweet-editor')[0]
+          target.innerText = '@' + replyTo
+          this.$nextTick(() => { this.contentChanged({ 'target': target }) })
+        }
         this.$nextTick(() => document.querySelectorAll('.tweet-editor').forEach(element => {
           if (element.style.display != 'none') {
             element.focus()
@@ -105,7 +111,7 @@ define(['Vue', 'twttr', 'punycode'], (Vue, twttr) => {
         <div style="margin-bottom: 5px; cursor: pointer;" @click="hide">close</div>
         <div style="margin-bottom: 10px;">{{reply.text}}</div>
         <div class="tweet-editor" contenteditable="true"
-          @input="contentChanged" @keyup.esc="hide" @paste.prevent="pasted" 
+          @input="contentChanged" @keyup.esc="hide" @paste.prevent="pasted"
           :style="{ 'border-color': '#' + user.profile_link_color }"></div>
         <span class="tweet-editor-container--tweet-counter" :class="{ 'is-text-invalid': !counter.valid }">{{counter.weightedLength}}</span>
         <span class="tweet-editor-container--tweet-action">
