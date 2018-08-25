@@ -33,22 +33,6 @@ define(['Vue', 'timeline/tweet-media', 'timeline/tweet-footer', 'timeline/mixin-
 
         <twiter-cards :card="card" v-for="card in twitterCards" :key="card.ogUrl"></twiter-cards>
 
-        <div class="timeline--quote" v-if="item.quoted_status">
-          <hr class="timeline--inner-tweet-border">
-          <div>
-            <span class="timeline--user-name">{{item.quoted_status.user.name}}</span>
-            <span class="timeline--user-screen_name">@{{item.quoted_status.user.screen_name}}</span>
-          </div>
-
-          <div v-if="item.quoted_status">
-            <pre v-html="item.quoted_status.full_text_twiicker" v-once></pre>
-          </div>
-
-          <div v-if="item.quoted_status.extended_entities" class="timeline--media">
-            <tweet-media v-for="media in item.quoted_status.extended_entities.media" :key="media.media_url_https" :media="media"></tweet-media>
-          </div>
-        </div>
-
         <hr class="timeline--action-border">
 
         <div class="timeline--actions">
